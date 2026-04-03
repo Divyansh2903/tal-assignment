@@ -38,3 +38,12 @@
 - Any phone number and OTP combination works - verification is mocked with local state as stated in the README.
 - Used local asset images for company logos where available, with remote URLs in mock JSON as a fallback.
 - The practice set card on the Home screen is static (not expandable/collapsible) since the Figma does not show a collapsed state.
+
+## Submission
+
+Links for reviewers (same as emailed to `internships@grapevine.in`; replace placeholders after publishing):
+
+- **Repository:** `https://github.com/Divyansh2903/tal-assignment`
+- **Video walkthrough:** `https://drive.google.com/file/d/1rS2tc8oR8nPv5cJZ02eucLJIuG2ySfXS/view?usp=sharing`
+- **APK download (Drive):** `https://drive.google.com/file/d/1Nxg8nvuXokpSESlgpL28X2LJdSBkKOFH/view?usp=sharing`
+- **APK download (EAS DOWNLOAD):** `https://expo.dev/accounts/sdivyansh001/projects/readyai-assignment/builds/6a142b37-7e69-4656-8c23-db7b5f590ba6`
