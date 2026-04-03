@@ -4,9 +4,79 @@
     "questionNumber": 1,
     "companyId": "1",
     "companyName": "PhonePe",
-    "companyLogoUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/PhonePe_Logo.svg/512px-PhonePe_Logo.svg.png",
+    "companyLogoUrl": "https://www.google.com/s2/favicons?domain=phonepe.com&sz=128",
     "text": "API latency is variable & app is sluggish. How do you design UI safely?",
     "durationMinutes": 2,
     "completedTodayCount": 2312
+  },
+  {
+    "id": "q2",
+    "questionNumber": 2,
+    "companyId": "2",
+    "companyName": "Amazon",
+    "companyLogoUrl": "https://www.google.com/s2/favicons?domain=amazon.com&sz=128",
+    "text": "How would you design a real-time notification system that scales to millions of users?",
+    "durationMinutes": 3,
+    "completedTodayCount": 1847
+  },
+  {
+    "id": "q3",
+    "questionNumber": 3,
+    "companyId": "1",
+    "companyName": "PhonePe",
+    "companyLogoUrl": "https://www.google.com/s2/favicons?domain=phonepe.com&sz=128",
+    "text": "Explain how you would implement secure payment processing in a mobile app.",
+    "durationMinutes": 3,
+    "completedTodayCount": 2312
+  },
+  {
+    "id": "q4",
+    "questionNumber": 4,
+    "companyId": "3",
+    "companyName": "Google",
+    "companyLogoUrl": "https://www.google.com/s2/favicons?domain=google.com&sz=128",
+    "text": "Design a caching strategy for a content-heavy mobile application with offline support.",
+    "durationMinutes": 2,
+    "completedTodayCount": 3105
+  },
+  {
+    "id": "q5",
+    "questionNumber": 5,
+    "companyId": "4",
+    "companyName": "Microsoft",
+    "companyLogoUrl": "https://www.google.com/s2/favicons?domain=microsoft.com&sz=128",
+    "text": "How would you handle state management in a large-scale React Native application?",
+    "durationMinutes": 3,
+    "completedTodayCount": 1563
+  },
+  {
+    "id": "q6",
+    "questionNumber": 6,
+    "companyId": "5",
+    "companyName": "Swiggy",
+    "companyLogoUrl": "https://www.google.com/s2/favicons?domain=swiggy.com&sz=128",
+    "text": "Design a location-based delivery tracking system with real-time updates.",
+    "durationMinutes": 2,
+    "completedTodayCount": 2089
+  },
+  {
+    "id": "q7",
+    "questionNumber": 7,
+    "companyId": "6",
+    "companyName": "Zomato",
+    "companyLogoUrl": "https://www.google.com/s2/favicons?domain=zomato.com&sz=128",
+    "text": "How would you optimize app startup time for a food delivery application?",
+    "durationMinutes": 2,
+    "completedTodayCount": 1721
+  },
+  {
+    "id": "q8",
+    "questionNumber": 8,
+    "companyId": "3",
+    "companyName": "Google",
+    "companyLogoUrl": "https://www.google.com/s2/favicons?domain=google.com&sz=128",
+    "text": "Explain how you would implement an efficient search-as-you-type feature.",
+    "durationMinutes": 3,
+    "completedTodayCount": 2456
   }
 ]

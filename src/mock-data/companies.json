@@ -2,6 +2,31 @@
   {
     "id": "1",
     "name": "PhonePe",
-    "logoUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/PhonePe_Logo.svg/512px-PhonePe_Logo.svg.png"
+    "logoUrl": "https://www.google.com/s2/favicons?domain=phonepe.com&sz=128"
+  },
+  {
+    "id": "2",
+    "name": "Amazon",
+    "logoUrl": "https://www.google.com/s2/favicons?domain=amazon.com&sz=128"
+  },
+  {
+    "id": "3",
+    "name": "Google",
+    "logoUrl": "https://www.google.com/s2/favicons?domain=google.com&sz=128"
+  },
+  {
+    "id": "4",
+    "name": "Microsoft",
+    "logoUrl": "https://www.google.com/s2/favicons?domain=microsoft.com&sz=128"
+  },
+  {
+    "id": "5",
+    "name": "Swiggy",
+    "logoUrl": "https://www.google.com/s2/favicons?domain=swiggy.com&sz=128"
+  },
+  {
+    "id": "6",
+    "name": "Zomato",
+    "logoUrl": "https://www.google.com/s2/favicons?domain=zomato.com&sz=128"
   }
 ]

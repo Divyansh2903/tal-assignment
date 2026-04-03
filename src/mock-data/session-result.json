@@ -2,19 +2,51 @@
   "questionId": "q1",
   "questionText": "API latency is variable & app is sluggish. How do you design UI safely?",
   "companyName": "PhonePe",
+  "companyLogoUrl": "https://www.google.com/s2/favicons?domain=phonepe.com&sz=128",
   "smartSummary": {
     "whatWorkedWell": [
-      "Add your bullet points here based on the Figma"
+      "Correctly explained how public/private keys enable secure data transmission.",
+      "Clearly articulated that passwords can be easily compromised without encryption.",
+      "Accurately described the handshake process as fundamental to establishing security.",
+      "Demonstrated strong understanding of optimistic UI patterns and their trade-offs."
     ],
     "overallTakeaways": [
-      "Add your bullet points here based on the Figma"
+      "Struggled to name other security guarantees beyond confidentiality when prompted.",
+      "Could improve explanation of how TLS certificates are validated in practice.",
+      "Consider discussing rate limiting and retry strategies for variable latency scenarios.",
+      "Would benefit from mentioning monitoring and alerting as part of the design."
     ]
   },
   "keyMoments": [
     {
-      "timestamp": "01:37",
-      "description": "Add key moment description here",
+      "timestamp": "00:37",
+      "description": "Correctly explained how public/private keys enable secure data transmission.",
       "type": "positive"
+    },
+    {
+      "timestamp": "01:03",
+      "description": "Clearly articulated that passwords can be easily compromised without encryption.",
+      "type": "positive"
+    },
+    {
+      "timestamp": "01:40",
+      "description": "Accurately described the handshake process as fundamental to establishing security.",
+      "type": "positive"
+    },
+    {
+      "timestamp": "02:28",
+      "description": "Struggled to name other security guarantees beyond confidentiality when prompted.",
+      "type": "negative"
+    },
+    {
+      "timestamp": "03:45",
+      "description": "Provided a clear example of optimistic UI rendering with rollback mechanism.",
+      "type": "positive"
+    },
+    {
+      "timestamp": "04:12",
+      "description": "Missed opportunity to discuss skeleton screens as a latency mitigation strategy.",
+      "type": "negative"
     }
   ],
   "audioDurationSeconds": 312
