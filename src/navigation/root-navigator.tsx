@@ -12,11 +12,18 @@ export function RootNavigator() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Auth" component={AuthNavigator} />
-      <Stack.Screen name="Main" component={MainNavigator} />
+      <Stack.Screen
+        name="Main"
+        component={MainNavigator}
+        options={{ animation: "fade" }}
+      />
       <Stack.Screen
         name="SessionResult"
         component={SessionResultScreen}
-        options={{ presentation: "modal" }}
+        options={{
+          presentation: "modal",
+          animation: "slide_from_bottom",
+        }}
       />
     </Stack.Navigator>
   );

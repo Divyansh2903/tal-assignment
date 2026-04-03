@@ -22,12 +22,13 @@ interface BulletItem {
 
 function BulletIcon() {
   return (
-    <View style={styles.iconContainer}>
+    <View style={styles.iconContainer} accessible={false}>
       <Image
         source={assets.icons.diamond}
         style={styles.bulletIcon}
         contentFit="contain"
         cachePolicy="memory-disk"
+        accessible={false}
       />
     </View>
   );

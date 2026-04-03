@@ -18,6 +18,7 @@ import { appPalette } from "@/constants/app-colors";
 import { spacing } from "@/theme/spacing";
 import { typography } from "@/theme/typography";
 import type { RootStackParamList } from "@/navigation/types";
+import { SettingsRow } from "../components/settings-row";
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
@@ -35,8 +36,8 @@ export function SettingsScreen() {
   return (
     <View style={[styles.safeArea, { paddingTop: insets.top }]}>
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-          <Ionicons name="chevron-back" size={24} color={appPalette.darkGray} />
+        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()} accessibilityLabel="Go back" accessibilityRole="button">
+          <Ionicons name="chevron-back" size={24} color={appPalette.darkGray} accessible={false} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Your Profile</Text>
         <View style={styles.headerRight} />
@@ -85,12 +86,15 @@ export function SettingsScreen() {
               style={styles.bannerImage}
               contentFit="contain"
               cachePolicy="memory-disk"
+              accessible={false}
             />
           </View>
 
           <TouchableOpacity
             activeOpacity={0.8}
             style={styles.bannerButtonWrapper}
+            accessibilityLabel="Start 3 days trial at 1 rupee"
+            accessibilityRole="button"
           >
             <LinearGradient
               colors={[appPalette.bannerGradientStart, appPalette.bannerGradientEnd]}
@@ -106,8 +110,8 @@ export function SettingsScreen() {
         </View>
 
         <View style={styles.card}>
-          <TouchableOpacity style={styles.row}>
-            <View style={styles.rowLeft}>
+          <SettingsRow
+            icon={
               <Svg
                 width="16"
                 height="16"
@@ -123,25 +127,29 @@ export function SettingsScreen() {
                   strokeLinejoin="round"
                 />
               </Svg>
-              <Text style={styles.rowText}>New update available</Text>
-            </View>
-            <View style={styles.iconButton}>
-              <Svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <Path
-                  d="M14.2333 8.89991V9.23324C14.2333 11.9947 11.9948 14.2332 9.23333 14.2332H8.9M0.899994 8.8999L0.899994 9.23324C0.899994 11.9947 3.13857 14.2332 5.9 14.2332H6.23333M7.56666 0.899902V8.8999L4.9 6.23324M9.23333 7.23324L10.2333 6.23324"
-                  stroke={appPalette.tealAccent}
-                  strokeWidth="1.8"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </Svg>
-            </View>
-          </TouchableOpacity>
+            }
+            label="New update available"
+            accessibilityLabel="New update available"
+            onPress={() => {}}
+            rightElement={
+              <View style={styles.iconButton}>
+                <Svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <Path
+                    d="M14.2333 8.89991V9.23324C14.2333 11.9947 11.9948 14.2332 9.23333 14.2332H8.9M0.899994 8.8999L0.899994 9.23324C0.899994 11.9947 3.13857 14.2332 5.9 14.2332H6.23333M7.56666 0.899902V8.8999L4.9 6.23324M9.23333 7.23324L10.2333 6.23324"
+                    stroke={appPalette.tealAccent}
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </Svg>
+              </View>
+            }
+          />
         </View>
 
         <View style={styles.card}>
-          <View style={styles.row}>
-            <View style={styles.rowLeft}>
+          <SettingsRow
+            icon={
               <Svg
                 width="13.33"
                 height="13.33"
@@ -157,13 +165,13 @@ export function SettingsScreen() {
                   strokeLinejoin="round"
                 />
               </Svg>
-              <Text style={styles.rowText}>Phone number</Text>
-            </View>
-            <Text style={styles.rowValue}>+91 9608184703</Text>
-          </View>
+            }
+            label="Phone number"
+            rightElement={<Text style={styles.rowValue}>+91 9608184703</Text>}
+          />
           <View style={styles.divider} />
-          <View style={styles.row}>
-            <View style={styles.rowLeft}>
+          <SettingsRow
+            icon={
               <Svg
                 width="15"
                 height="16"
@@ -179,15 +187,15 @@ export function SettingsScreen() {
                   strokeLinejoin="round"
                 />
               </Svg>
-              <Text style={styles.rowText}>Learning since</Text>
-            </View>
-            <Text style={styles.rowValue}>August 17, 2025</Text>
-          </View>
+            }
+            label="Learning since"
+            rightElement={<Text style={styles.rowValue}>August 17, 2025</Text>}
+          />
         </View>
 
         <View style={styles.card}>
-          <TouchableOpacity style={styles.row}>
-            <View style={styles.rowLeft}>
+          <SettingsRow
+            icon={
               <Svg
                 width="16"
                 height="15"
@@ -203,13 +211,15 @@ export function SettingsScreen() {
                   strokeLinejoin="round"
                 />
               </Svg>
-              <Text style={styles.rowText}>Chat with us</Text>
-            </View>
-            <Ionicons name="chevron-forward" size={20} color={appPalette.systemGray4} />
-          </TouchableOpacity>
+            }
+            label="Chat with us"
+            accessibilityLabel="Chat with us"
+            onPress={() => {}}
+            rightElement={<Ionicons name="chevron-forward" size={20} color={appPalette.systemGray4} accessible={false} />}
+          />
           <View style={styles.divider} />
-          <TouchableOpacity style={styles.row}>
-            <View style={styles.rowLeft}>
+          <SettingsRow
+            icon={
               <Svg
                 width="16"
                 height="16"
@@ -225,13 +235,15 @@ export function SettingsScreen() {
                   strokeLinejoin="round"
                 />
               </Svg>
-              <Text style={styles.rowText}>Share the app</Text>
-            </View>
-            <Ionicons name="chevron-forward" size={20} color={appPalette.systemGray4} />
-          </TouchableOpacity>
+            }
+            label="Share the app"
+            accessibilityLabel="Share the app"
+            onPress={() => {}}
+            rightElement={<Ionicons name="chevron-forward" size={20} color={appPalette.systemGray4} accessible={false} />}
+          />
           <View style={styles.divider} />
-          <TouchableOpacity style={styles.row}>
-            <View style={styles.rowLeft}>
+          <SettingsRow
+            icon={
               <Svg
                 width="16"
                 height="16"
@@ -247,13 +259,15 @@ export function SettingsScreen() {
                   strokeLinejoin="round"
                 />
               </Svg>
-              <Text style={styles.rowText}>Rate the app</Text>
-            </View>
-            <Ionicons name="chevron-forward" size={20} color={appPalette.systemGray4} />
-          </TouchableOpacity>
+            }
+            label="Rate the app"
+            accessibilityLabel="Rate the app"
+            onPress={() => {}}
+            rightElement={<Ionicons name="chevron-forward" size={20} color={appPalette.systemGray4} accessible={false} />}
+          />
           <View style={styles.divider} />
-          <TouchableOpacity style={styles.row} onPress={handleLogout}>
-            <View style={styles.rowLeft}>
+          <SettingsRow
+            icon={
               <Svg
                 width="16"
                 height="16"
@@ -269,10 +283,12 @@ export function SettingsScreen() {
                   strokeLinejoin="round"
                 />
               </Svg>
-              <Text style={styles.rowText}>Log out</Text>
-            </View>
-            <Ionicons name="chevron-forward" size={20} color={appPalette.systemGray4} />
-          </TouchableOpacity>
+            }
+            label="Log out"
+            accessibilityLabel="Log out"
+            onPress={handleLogout}
+            rightElement={<Ionicons name="chevron-forward" size={20} color={appPalette.systemGray4} accessible={false} />}
+          />
         </View>
 
         <View style={styles.footer}>
@@ -385,25 +401,8 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.xs,
     paddingHorizontal: spacing.m,
   },
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingVertical: 18,
-  },
-  rowLeft: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
   icon: {
     marginRight: spacing.s,
-  },
-  rowText: {
-    fontSize: 14,
-    lineHeight: 20,
-    color: appPalette.ink2,
-    fontFamily: typography.fonts.inter.medium,
-    letterSpacing: -0.14,
   },
   rowValue: {
     fontSize: 14,

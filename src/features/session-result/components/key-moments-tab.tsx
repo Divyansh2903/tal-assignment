@@ -24,8 +24,8 @@ function AudioPlayer({ duration }: { duration: number }) {
   return (
     <View style={styles.audioPlayer}>
       <View style={styles.playerRow}>
-        <TouchableOpacity style={styles.playButton} activeOpacity={0.7}>
-          <Ionicons name="play" size={22} color={appPalette.orangeBrown} style={{ marginLeft: spacing.xxxs }} />
+        <TouchableOpacity style={styles.playButton} activeOpacity={0.7} accessibilityLabel="Play mock interview" accessibilityRole="button">
+          <Ionicons name="play" size={22} color={appPalette.orangeBrown} style={{ marginLeft: spacing.xxxs }} accessible={false} />
         </TouchableOpacity>
         <View style={styles.playerRight}>
           <Text style={styles.audioTitle}>Mock Interview</Text>

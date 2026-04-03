@@ -1,6 +1,7 @@
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
+import * as Haptics from "expo-haptics";
 import { Image } from "expo-image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -10,6 +11,7 @@ import type { RootStackParamList } from "@/navigation/types";
 import { spacing } from "@/theme/spacing";
 import { typography } from "@/theme/typography";
 
+import { SessionResultSkeleton } from "../components/session-result-skeleton";
 import { KeyMomentsTab } from "../components/key-moments-tab";
 import { SmartSummaryTab } from "../components/smart-summary-tab";
 import type { SessionResult } from "../types";
@@ -22,24 +24,40 @@ type TabType = "summary" | "moments";
 export function SessionResultScreen({ navigation }: Props) {
   const insets = useSafeAreaInsets();
   const [activeTab, setActiveTab] = useState<TabType>("summary");
+  const [isLoading, setIsLoading] = useState(true);
 
   const result = sessionResultData as SessionResult;
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 1200);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return (
+      <View style={[styles.container, { paddingTop: insets.top }]}>
+        <SessionResultSkeleton />
+      </View>
+    );
+  }
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.header}>
-        <View style={styles.avatarRow}>
+        <View style={styles.avatarRow} accessible={false}>
           <Image
             source={assets.images.boyGif}
             style={styles.avatar}
             contentFit="cover"
             cachePolicy="memory-disk"
+            accessible={false}
           />
           <Image
             source={assets.images.girlGif}
             style={[styles.avatar, styles.avatarOverlap]}
             contentFit="cover"
             cachePolicy="memory-disk"
+            accessible={false}
           />
         </View>
 
@@ -49,12 +67,15 @@ export function SessionResultScreen({ navigation }: Props) {
             style={styles.closeButton}
             onPress={() => navigation.goBack()}
             activeOpacity={0.85}
+            accessibilityLabel="Close"
+            accessibilityRole="button"
           >
             <Image
               source={assets.icons.cancel}
               style={styles.closeIcon}
               contentFit="contain"
               cachePolicy="memory-disk"
+              accessible={false}
             />
           </TouchableOpacity>
         </View>
@@ -64,11 +85,12 @@ export function SessionResultScreen({ navigation }: Props) {
           <View style={styles.questionCard}>
             <Text style={styles.questionText}>{result.questionText}</Text>
             <View style={styles.companyRow}>
-              <View style={styles.companyLogoContainer}>
+              <View style={styles.companyLogoContainer} accessible={false}>
                 <Image
                   source={result.companyLogoUrl}
                   style={styles.companyLogo}
                   cachePolicy="memory-disk"
+                  accessible={false}
                 />
               </View>
               <Text style={styles.companyName}>Asked by {result.companyName}</Text>
@@ -81,7 +103,12 @@ export function SessionResultScreen({ navigation }: Props) {
         <View style={styles.tabBar}>
           <TouchableOpacity
             style={[styles.tab, activeTab === "summary" && styles.tabActive]}
-            onPress={() => setActiveTab("summary")}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              setActiveTab("summary");
+            }}
+            accessibilityLabel="Smart summary tab"
+            accessibilityRole="tab"
           >
             <Text
               style={[
@@ -94,7 +121,12 @@ export function SessionResultScreen({ navigation }: Props) {
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.tab, activeTab === "moments" && styles.tabActive]}
-            onPress={() => setActiveTab("moments")}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              setActiveTab("moments");
+            }}
+            accessibilityLabel="Key moments tab"
+            accessibilityRole="tab"
           >
             <Text
               style={[

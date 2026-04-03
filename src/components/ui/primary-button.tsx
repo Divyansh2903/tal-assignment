@@ -1,4 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
+import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
@@ -29,10 +30,15 @@ export function PrimaryButton({
       <View style={[styles.wrapper, { height: btnHeight + 8 }]}>
         <View style={[styles.orangeShadow, { height: btnHeight }]} />
         <TouchableOpacity
-          onPress={onPress}
+          onPress={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+            onPress();
+          }}
           activeOpacity={0.85}
           disabled={disabled}
           style={styles.touchable}
+          accessibilityRole="button"
+          accessibilityLabel={label}
         >
           <LinearGradient
             colors={[appPalette.orangeVivid, appPalette.orangeRed]}
