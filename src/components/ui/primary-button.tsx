@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
-import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { triggerHaptic } from "@/utils/haptics";
 
 import { appPalette } from "@/constants/app-colors";
 import { spacing } from "@/theme/spacing";
@@ -31,7 +31,7 @@ export function PrimaryButton({
         <View style={[styles.orangeShadow, { height: btnHeight }]} />
         <TouchableOpacity
           onPress={() => {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+            triggerHaptic("medium");
             onPress();
           }}
           activeOpacity={0.85}

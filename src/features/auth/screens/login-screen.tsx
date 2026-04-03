@@ -4,12 +4,14 @@ import { useCallback, useState } from "react";
 
 import { appPalette } from "@/constants/app-colors";
 import {
+  Alert,
   Keyboard,
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
   Text,
   TextInput,
+  ToastAndroid,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -43,14 +45,29 @@ export function LoginScreen({ navigation }: Props) {
     setPhoneNumber(text.replace(/[^0-9]/g, ""));
   }, []);
 
+  const showToast = useCallback((message: string) => {
+    if (Platform.OS === "android") {
+      ToastAndroid.show(message, ToastAndroid.SHORT);
+    } else {
+      Alert.alert("", message);
+    }
+  }, []);
+
   const handleContinue = useCallback(() => {
-    if (!canContinue) return;
+    if (!isPhoneValid) {
+      showToast("Please enter a valid 10-digit mobile number.");
+      return;
+    }
+    if (!isOtpComplete) {
+      showToast("Please enter the complete 6-digit OTP.");
+      return;
+    }
     Keyboard.dismiss();
     navigation.getParent()?.reset({
       index: 0,
       routes: [{ name: "Main" }],
     });
-  }, [canContinue, navigation]);
+  }, [isPhoneValid, isOtpComplete, showToast, navigation]);
 
   return (
     <KeyboardAvoidingView
@@ -103,11 +120,10 @@ export function LoginScreen({ navigation }: Props) {
         <PrimaryButton
           label="Continue"
           onPress={handleContinue}
-          disabled={!canContinue}
           size="small"
         />
       </View>
-      <View style={{ height: insets.bottom || 16 }} />
+      <View style={{ height: 16 }} />
 
       <CountryPickerModal
         visible={showCountryPicker}

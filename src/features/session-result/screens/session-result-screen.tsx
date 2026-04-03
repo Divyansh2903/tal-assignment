@@ -1,5 +1,5 @@
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
-import * as Haptics from "expo-haptics";
+import { triggerHaptic } from "@/utils/haptics";
 import { Image } from "expo-image";
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -104,7 +104,7 @@ export function SessionResultScreen({ navigation }: Props) {
           <TouchableOpacity
             style={[styles.tab, activeTab === "summary" && styles.tabActive]}
             onPress={() => {
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              triggerHaptic("light");
               setActiveTab("summary");
             }}
             accessibilityLabel="Smart summary tab"
@@ -122,7 +122,7 @@ export function SessionResultScreen({ navigation }: Props) {
           <TouchableOpacity
             style={[styles.tab, activeTab === "moments" && styles.tabActive]}
             onPress={() => {
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              triggerHaptic("light");
               setActiveTab("moments");
             }}
             accessibilityLabel="Key moments tab"

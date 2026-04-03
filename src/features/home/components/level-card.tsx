@@ -1,10 +1,11 @@
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
-import * as Haptics from "expo-haptics";
+import { triggerHaptic } from "@/utils/haptics";
 import { Image } from "expo-image";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { RootStackParamList } from "@/navigation/types";
 import {
+  Dimensions,
   Pressable,
   StyleSheet,
   Text,
@@ -19,6 +20,11 @@ import { typography } from "@/theme/typography";
 import type { LevelCardProps } from "../types";
 
 const LOGO_IMAGES = assets.logos;
+const SCREEN_WIDTH = Dimensions.get("window").width;
+const SCREEN_H_PADDING = spacing.m; // home screen's paddingHorizontal
+const TOOLTIP_INSET = spacing.xs; // tooltip inset from screen edges
+const TOOLTIP_WIDTH = SCREEN_WIDTH - TOOLTIP_INSET * 2;
+const CARD_WIDTH = 206;
 
 export function LevelCard({ id, company, logoKey, fallbackIcon, fallbackColor, status, marginLeft, showStartTooltip, onPress, showFeedbackTooltip }: LevelCardProps) {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -50,8 +56,8 @@ export function LevelCard({ id, company, logoKey, fallbackIcon, fallbackColor, s
       )}
 
       {showFeedbackTooltip && (
-        <View style={styles.feedbackTooltipWrapper}>
-          <View style={styles.feedbackTooltipArrow} />
+        <View style={[styles.feedbackTooltipWrapper, { width: TOOLTIP_WIDTH, left: -(marginLeft + SCREEN_H_PADDING - TOOLTIP_INSET) }]}>
+          <View style={[styles.feedbackTooltipArrow, { left: marginLeft + SCREEN_H_PADDING - TOOLTIP_INSET + CARD_WIDTH / 2 - 8 }]} />
           <View style={styles.feedbackTooltipContainer}>
             <Text style={styles.feedbackTooltipText}>
               API latency is variable & app is sluggish,{"\n"}How do you design UI safely?
@@ -93,7 +99,7 @@ export function LevelCard({ id, company, logoKey, fallbackIcon, fallbackColor, s
         </View>
       )}
 
-      <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); onPress?.(); }} accessibilityLabel={`${company} question ${id}`} style={({pressed}) => [{
+      <Pressable onPress={() => { triggerHaptic("light"); onPress?.(); }} accessibilityLabel={`${company} question ${id}`} style={({pressed}) => [{
           borderRadius: 30,
           backgroundColor: shadowColor,
           paddingBottom: spacing.xs,
@@ -269,15 +275,12 @@ const styles = StyleSheet.create({
   feedbackTooltipWrapper: {
     position: "absolute",
     top: 90,
-    left: -48,
-    width: 380,
     zIndex: 20,
     elevation: 20,
   },
   feedbackTooltipArrow: {
     position: "absolute",
     top: -6,
-    left: 190,
     width: 16,
     height: 16,
     backgroundColor: appPalette.yellowBright,

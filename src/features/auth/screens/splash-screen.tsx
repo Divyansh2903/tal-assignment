@@ -1,9 +1,8 @@
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { Image } from "expo-image";
 import { useEffect } from "react";
 import { StyleSheet, View } from "react-native";
 
-import { assets } from "@/constants/assets";
+import { FullLogo } from "@/components/ui/full-logo";
 import type { AuthStackParamList } from "@/navigation/types";
 import { colors } from "@/theme/colors";
 
@@ -19,12 +18,7 @@ export function SplashScreen({ navigation }: Props) {
 
   return (
     <View style={styles.container}>
-      <Image
-        source={assets.images.fullLogo}
-        style={styles.logo}
-        contentFit="contain"
-        cachePolicy="memory-disk"
-      />
+      <FullLogo width={220} height={60} />
     </View>
   );
 }
@@ -35,9 +29,5 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
     alignItems: "center",
     justifyContent: "center",
-  },
-  logo: {
-    width: 220,
-    height: 60,
   },
 });

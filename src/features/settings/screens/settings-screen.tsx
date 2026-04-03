@@ -11,7 +11,7 @@ import {
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Svg, { Path } from "react-native-svg";
+import Svg, { Path, Rect } from "react-native-svg";
 
 import { assets } from "@/constants/assets";
 import { appPalette } from "@/constants/app-colors";
@@ -48,32 +48,24 @@ export function SettingsScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.bannerContainer}>
-          <View style={StyleSheet.absoluteFillObject}>
-            <View
-              style={{
-                position: "absolute",
-                width: 26,
-                height: 200,
-                backgroundColor: appPalette.overlayWhite8,
-                borderRadius: spacing.inputRadius,
-                transform: [{ rotate: "51deg" }],
-                 left: 15,
-                top: -60,
-              }}
+          <Svg style={StyleSheet.absoluteFillObject} fill="none">
+            <Rect
+              width={26.3064}
+              height={130.279}
+              rx={12}
+              transform="matrix(0.624847, 0.780747, -0.714576, 0.699557, 53.9406, -47.4141)"
+              fill="white"
+              fillOpacity={0.08}
             />
-            <View
-              style={{
-                position: "absolute",
-                width: 31,
-                height: 250,
-                backgroundColor: appPalette.overlayWhite8,
-                borderRadius: spacing.inputRadius,
-                transform: [{ rotate: "51deg" }],
-                left: 15,
-                top: -60,
-              }}
+            <Rect
+              width={31.1478}
+              height={198.875}
+              rx={12}
+              transform="matrix(0.624847, 0.780747, -0.714576, 0.699557, 100.224, -42.0273)"
+              fill="white"
+              fillOpacity={0.08}
             />
-          </View>
+          </Svg>
 
           <View style={styles.bannerContent}>
             <View style={styles.bannerTextContent}>
