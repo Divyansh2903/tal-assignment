@@ -3,6 +3,9 @@ import { Image } from "expo-image";
 import React, { useMemo } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
+import { assets } from "@/constants/assets";
+import { appPalette } from "@/constants/app-colors";
+import { spacing } from "@/theme/spacing";
 import { typography } from "@/theme/typography";
 
 import type { SmartSummary } from "../types";
@@ -21,9 +24,10 @@ function BulletIcon() {
   return (
     <View style={styles.iconContainer}>
       <Image
-        source={require("../../../../assets/diamond_icon.png")}
+        source={assets.icons.diamond}
         style={styles.bulletIcon}
         contentFit="contain"
+        cachePolicy="memory-disk"
       />
     </View>
   );
@@ -85,25 +89,25 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   listContent: {
-    paddingBottom: 32,
+    paddingBottom: spacing.xxl,
   },
   sectionTitle: {
     fontFamily: typography.fonts.manrope.semiBold,
     fontSize: 16,
     lineHeight: 16,
-    color: "#48484A",
-    marginBottom: 16,
+    color: appPalette.ink3,
+    marginBottom: spacing.m,
   },
   divider: {
     height: 1,
-    backgroundColor: "#EFEFF4",
-    marginVertical: 16,
+    backgroundColor: appPalette.separator,
+    marginVertical: spacing.m,
   },
   bulletRow: {
     flexDirection: "row",
     alignItems: "flex-start",
-    marginBottom: 16,
-    gap: 8,
+    marginBottom: spacing.xs,
+    gap: spacing.xs,
   },
   iconContainer: {
     width: 10,
@@ -120,6 +124,6 @@ const styles = StyleSheet.create({
     fontFamily: typography.fonts.manrope.medium,
     fontSize: 14,
     lineHeight: 20,
-    color: "#48484A",
+    color: appPalette.ink3,
   },
 });

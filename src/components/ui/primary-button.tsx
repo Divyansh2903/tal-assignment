@@ -2,6 +2,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
+import { appPalette } from "@/constants/app-colors";
+import { spacing } from "@/theme/spacing";
 import { typography } from "@/theme/typography";
 
 interface PrimaryButtonProps {
@@ -33,13 +35,13 @@ export function PrimaryButton({
           style={styles.touchable}
         >
           <LinearGradient
-            colors={["#FF6D00", "#FF3900"]}
+            colors={[appPalette.orangeVivid, appPalette.orangeRed]}
             start={{ x: 0.5, y: 0 }}
             end={{ x: 0.5, y: 1 }}
             style={[styles.gradient, { height: btnHeight }]}
           >
             {leftIcon && (
-              <Ionicons name={leftIcon} size={20} color="#FFFFFF" />
+              <Ionicons name={leftIcon} size={20} color={appPalette.white} />
             )}
             <Text style={[styles.label, { fontSize }]}>{label}</Text>
           </LinearGradient>
@@ -54,7 +56,7 @@ const styles = StyleSheet.create({
     width: "100%",
     ...Platform.select({
       ios: {
-        shadowColor: "#000000",
+        shadowColor: appPalette.black,
         shadowOffset: { width: 0, height: 8 },
         shadowOpacity: 0.2,
         shadowRadius: 0,
@@ -72,8 +74,8 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    borderRadius: 12,
-    backgroundColor: "#D63A00",
+    borderRadius: spacing.inputRadius,
+    backgroundColor: appPalette.orangeDark,
   },
   touchable: {
     position: "absolute",
@@ -82,19 +84,19 @@ const styles = StyleSheet.create({
     top: 0,
   },
   gradient: {
-    borderRadius: 12,
+    borderRadius: spacing.inputRadius,
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    paddingHorizontal: 12,
-    paddingVertical: 16,
-    gap: 2,
+    paddingHorizontal: spacing.s,
+    paddingVertical: spacing.m,
+    gap: spacing.xxxs,
   },
   label: {
     fontFamily: typography.fonts.inter.medium,
     fontSize: 16,
     lineHeight: 24,
     letterSpacing: -0.16,
-    color: "#FFFFFF",
+    color: appPalette.white,
   },
 });

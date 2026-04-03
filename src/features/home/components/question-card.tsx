@@ -31,6 +31,7 @@ function QuestionCardComponent({ question, isFirst, onPress }: QuestionCardProps
         <Image
           source={question.companyLogoUrl}
           style={styles.companyLogo}
+          contentFit="contain"
           cachePolicy="memory-disk"
         />
       </View>

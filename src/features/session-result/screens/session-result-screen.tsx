@@ -4,7 +4,10 @@ import { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { assets } from "@/constants/assets";
+import { appPalette } from "@/constants/app-colors";
 import type { RootStackParamList } from "@/navigation/types";
+import { spacing } from "@/theme/spacing";
 import { typography } from "@/theme/typography";
 
 import { KeyMomentsTab } from "../components/key-moments-tab";
@@ -27,14 +30,16 @@ export function SessionResultScreen({ navigation }: Props) {
       <View style={styles.header}>
         <View style={styles.avatarRow}>
           <Image
-            source={require("../../../../assets/boy_gif.gif")}
+            source={assets.images.boyGif}
             style={styles.avatar}
             contentFit="cover"
+            cachePolicy="memory-disk"
           />
           <Image
-            source={require("../../../../assets/girl_gif.gif")}
+            source={assets.images.girlGif}
             style={[styles.avatar, styles.avatarOverlap]}
             contentFit="cover"
+            cachePolicy="memory-disk"
           />
         </View>
 
@@ -46,9 +51,10 @@ export function SessionResultScreen({ navigation }: Props) {
             activeOpacity={0.85}
           >
             <Image
-              source={require("../../../../assets/cancel_btn.png")}
+              source={assets.icons.cancel}
               style={styles.closeIcon}
               contentFit="contain"
+              cachePolicy="memory-disk"
             />
           </TouchableOpacity>
         </View>
@@ -117,10 +123,10 @@ export function SessionResultScreen({ navigation }: Props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#E8F5E9",
+    backgroundColor: appPalette.greenWash,
   },
   header: {
-    paddingHorizontal: 16,
+    paddingHorizontal: spacing.m,
     paddingTop: 49,
     alignItems: "center",
   },
@@ -136,8 +142,8 @@ const styles = StyleSheet.create({
     height: 107,
     borderRadius: 668,
     borderWidth: 2.7,
-    borderColor: "#D4F3E5",
-    backgroundColor: "#FFFFFF",
+    borderColor: appPalette.greenMist,
+    backgroundColor: appPalette.white,
   },
   avatarOverlap: {
     marginLeft: -22,
@@ -156,7 +162,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     height: 42,
     borderRadius: 21,
-    backgroundColor: "#4ADE80",
+    backgroundColor: appPalette.green40,
   },
   closeButton: {
     position: "absolute",
@@ -166,7 +172,7 @@ const styles = StyleSheet.create({
     width: 42,
     height: 42,
     borderRadius: 21,
-    backgroundColor: "#95E5BD",
+    backgroundColor: appPalette.greenPale,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -182,16 +188,16 @@ const styles = StyleSheet.create({
   diamond: {
     width: 14,
     height: 14,
-    backgroundColor: "#13BF69",
+    backgroundColor: appPalette.greenVivid,
     borderRadius: 2,
     transform: [{ rotate: "45deg" }],
     marginBottom: -7,
     zIndex: 1,
   },
   questionCard: {
-    backgroundColor: "#13BF69",
-    borderRadius: 16,
-    padding: 16,
+    backgroundColor: appPalette.greenVivid,
+    borderRadius: spacing.cardRadius,
+    padding: spacing.cardPadding,
     width: "100%",
     alignItems: "center",
     gap: 10,
@@ -199,7 +205,7 @@ const styles = StyleSheet.create({
   questionText: {
     fontFamily: typography.fonts.manrope.bold,
     fontSize: 16,
-    color: "#FFFFFF",
+    color: appPalette.white,
     lineHeight: 22,
     letterSpacing: 0,
     textAlign: "center",
@@ -207,15 +213,15 @@ const styles = StyleSheet.create({
   companyRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 4,
+    gap: spacing.xxs,
   },
   companyLogoContainer: {
     width: 22,
     height: 22,
     borderRadius: 687,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: appPalette.white,
     borderWidth: 0.69,
-    borderColor: "#FFEFB9",
+    borderColor: appPalette.yellowLight,
     alignItems: "center",
     justifyContent: "center",
     overflow: "hidden",
@@ -229,43 +235,44 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 16,
     letterSpacing: -0.14,
-    color: "#EFEFF4",
+    color: appPalette.separator,
   },
   detailsCard: {
     flex: 1,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: appPalette.white,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
-    marginTop: 12,
-    paddingTop: 20,
-    paddingHorizontal: 16,
+    marginTop: spacing.s,
+    paddingTop: spacing.l,
+    paddingHorizontal: spacing.m,
   },
   tabBar: {
     flexDirection: "row",
+    justifyContent: "center",
+    gap: spacing.giga,
     borderBottomWidth: 1,
-    borderBottomColor: "#EFEFF4",
-    marginBottom: 24,
+    borderBottomColor: appPalette.separator,
+    marginBottom: spacing.xl,
   },
   tab: {
-    flex: 1,
     paddingVertical: 6,
-    paddingBottom: 8,
+    paddingBottom: spacing.xs,
     alignItems: "center",
     borderBottomWidth: 2,
     borderBottomColor: "transparent",
   },
   tabActive: {
-    borderBottomColor: "#2C2C2E",
+    borderBottomColor: appPalette.ink2,
   },
   tabText: {
     fontFamily: typography.fonts.manrope.normal,
     fontSize: 14,
     lineHeight: 18,
     letterSpacing: -0.14,
-    color: "#6C6C70",
+    color: appPalette.inkMuted,
   },
   tabTextActive: {
     fontFamily: typography.fonts.manrope.medium,
-    color: "#2C2C2E",
+    color: appPalette.ink2,
   },
 });

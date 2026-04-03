@@ -1,8 +1,11 @@
 import { Ionicons } from "@expo/vector-icons";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useCallback, useRef, useState } from "react";
+
+import { FlashList } from "@shopify/flash-list";
+
+import { appPalette } from "@/constants/app-colors";
 import {
-  FlatList,
   Keyboard,
   KeyboardAvoidingView,
   Modal,
@@ -17,6 +20,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { PrimaryButton } from "@/components/ui/primary-button";
 import type { AuthStackParamList } from "@/navigation/types";
+import { spacing } from "@/theme/spacing";
 import { typography } from "@/theme/typography";
 
 type Props = NativeStackScreenProps<AuthStackParamList, "Login">;
@@ -106,7 +110,7 @@ export function LoginScreen({ navigation }: Props) {
 
   return (
     <KeyboardAvoidingView
-      style={[styles.container, { paddingTop: insets.top + 40 }]}
+      style={[styles.container, { paddingTop: insets.top + 60 }]}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <View style={styles.content}>
@@ -127,13 +131,13 @@ export function LoginScreen({ navigation }: Props) {
           >
             <Text style={styles.flag}>{selectedCountry.flag}</Text>
             <Text style={styles.countryCodeText}>{selectedCountry.code}</Text>
-            <Ionicons name="chevron-down" size={14} color="#8E8E93" />
+            <Ionicons name="chevron-down" size={14} color={appPalette.systemGray} />
           </TouchableOpacity>
           <View style={styles.phoneDivider} />
           <TextInput
             style={styles.phoneInput}
             placeholder="8812014288"
-            placeholderTextColor="#C7C7CC"
+            placeholderTextColor={appPalette.systemGray4}
             keyboardType="number-pad"
             maxLength={10}
             value={phoneNumber}
@@ -162,6 +166,8 @@ export function LoginScreen({ navigation }: Props) {
               onKeyPress={({ nativeEvent }) =>
                 handleOtpKeyPress(nativeEvent.key, index)
               }
+              placeholder="-"
+              placeholderTextColor={appPalette.ink}
             />
           ))}
         </View>
@@ -175,7 +181,7 @@ export function LoginScreen({ navigation }: Props) {
           size="small"
         />
       </View>
-      <View style={{ height: insets.bottom + 16 }} />
+      <View style={{ height: insets.bottom || 16 }} />
 
       <Modal
         visible={showCountryPicker}
@@ -191,26 +197,28 @@ export function LoginScreen({ navigation }: Props) {
           <View style={[styles.modalContent, { paddingBottom: insets.bottom + 16 }]}>
             <View style={styles.modalHandle} />
             <Text style={styles.modalTitle}>Select country</Text>
-            <FlatList
-              data={COUNTRIES}
-              keyExtractor={(item) => item.code}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  style={[
-                    styles.countryRow,
-                    item.code === selectedCountry.code && styles.countryRowSelected,
-                  ]}
-                  onPress={() => {
-                    setSelectedCountry(item);
-                    setShowCountryPicker(false);
-                  }}
-                >
-                  <Text style={styles.countryFlag}>{item.flag}</Text>
-                  <Text style={styles.countryName}>{item.name}</Text>
-                  <Text style={styles.countryDialCode}>{item.code}</Text>
-                </TouchableOpacity>
-              )}
-            />
+            <View style={{ minHeight: 300 }}>
+              <FlashList
+                data={COUNTRIES}
+                keyExtractor={(item) => item.code}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    style={[
+                      styles.countryRow,
+                      item.code === selectedCountry.code && styles.countryRowSelected,
+                    ]}
+                    onPress={() => {
+                      setSelectedCountry(item);
+                      setShowCountryPicker(false);
+                    }}
+                  >
+                    <Text style={styles.countryFlag}>{item.flag}</Text>
+                    <Text style={styles.countryName}>{item.name}</Text>
+                    <Text style={styles.countryDialCode}>{item.code}</Text>
+                  </TouchableOpacity>
+                )}
+              />
+            </View>
           </View>
         </TouchableOpacity>
       </Modal>
@@ -221,8 +229,8 @@ export function LoginScreen({ navigation }: Props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FFFFFF",
-    paddingHorizontal: 24,
+    backgroundColor: appPalette.white,
+    paddingHorizontal: spacing.xl,
   },
   content: {
     flex: 1,
@@ -231,137 +239,140 @@ const styles = StyleSheet.create({
     fontFamily: typography.fonts.manrope.semiBold,
     fontSize: 30,
     letterSpacing: -0.3,
-    color: "#1C1C1E",
+    color: appPalette.ink,
     marginBottom: 22,
   },
   headingHighlight: {
-    color: "#FF6D00",
+    color: appPalette.orangeVivid,
   },
   subtitle: {
     fontFamily: typography.fonts.inter.normal,
     fontSize: 14,
     lineHeight: 20,
-    color: "#48484A",
-    marginBottom:32,
+    color: appPalette.ink3,
+    marginBottom: spacing.xxl,
   },
   label: {
     fontFamily: typography.fonts.inter.medium,
     fontSize: 12,
     lineHeight: 16,
-    color: "#48484A",
-    marginBottom: 8,
+    color: appPalette.ink3,
+    marginBottom: spacing.xs,
   },
   phoneContainer: {
     flexDirection: "row",
     alignItems: "center",
     height: 44,
     borderWidth: 1,
-    borderColor: "#EFEFF4",
-    borderRadius: 12,
+    borderColor: appPalette.separator,
+    borderRadius: spacing.inputRadius,
     overflow: "hidden",
   },
   countryCode: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 12,
-    gap: 4,
+    paddingHorizontal: spacing.s,
+    gap: spacing.xxs,
     height: 44,
   },
   flag: {
-    fontSize: 18,
+    fontSize: 14,
   },
   countryCodeText: {
     fontFamily: typography.fonts.inter.medium,
     fontSize: 14,
-    color: "#1C1C1E",
+    color: appPalette.ink,
   },
   phoneDivider: {
     width: 1,
     height: 24,
-    backgroundColor: "#EFEFF4",
+    backgroundColor: appPalette.separator,
   },
   phoneInput: {
     flex: 1,
     height: 44,
-    paddingHorizontal: 12,
+    paddingHorizontal: spacing.s,
     fontFamily: typography.fonts.inter.normal,
     fontSize: 14,
-    color: "#1C1C1E",
+    color: appPalette.ink,
   },
   validationText: {
     fontFamily: typography.fonts.inter.normal,
     fontSize: 12,
     lineHeight: 16,
-    color: "#8E8E93",
-    marginTop: 4,
+    color: appPalette.systemGray,
+    marginTop: spacing.xs,
   },
   otpLabel: {
     fontFamily: typography.fonts.inter.medium,
     fontSize: 12,
     lineHeight: 16,
-    color: "#48484A",
-    marginTop: 32,
-    marginBottom: 8,
+    color: appPalette.ink3,
+    marginTop: spacing.xxl,
+    marginBottom: spacing.xs,
   },
   otpRow: {
     flexDirection: "row",
-    gap: 8,
+    gap: spacing.xs,
   },
   otpBox: {
-    width: 44,
-    height: 52,
-    backgroundColor: "#FFFFFF",
+    width: 48,
+    height: 54,
+    backgroundColor: appPalette.white,
     borderWidth: 1,
-    borderColor: "#E5E5EA",
-    borderRadius: 8,
+    borderColor: appPalette.fillSecondary,
+    borderBottomWidth: 2,
+    borderBottomColor: appPalette.overlayBlack10,
+    borderRadius: spacing.xs,
     textAlign: "center",
     fontFamily: typography.fonts.inter.medium,
     fontSize: 20,
-    color: "#2C2C2E",
+    color: appPalette.ink2,
   },
   otpBoxFilled: {
-    backgroundColor: "#F5F5F8",
-    borderColor: "transparent",
+    backgroundColor: appPalette.fillSecondary,
+    borderBottomWidth: 2,
+    borderBottomColor: appPalette.overlayBlack10,
   },
   bottomActions: {
-    paddingBottom: 16,
+    paddingBottom: 0,
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.4)",
+    backgroundColor: appPalette.overlayBlack40,
     justifyContent: "flex-end",
   },
   modalContent: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: appPalette.white,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    paddingTop: 12,
+    paddingTop: spacing.s,
     maxHeight: "60%",
   },
   modalHandle: {
     width: 36,
     height: 4,
-    borderRadius: 2,
-    backgroundColor: "#E5E5EA",
+    borderRadius: spacing.xxxs,
+    backgroundColor: appPalette.systemGray6,
     alignSelf: "center",
-    marginBottom: 16,
+    marginBottom: spacing.m,
   },
   modalTitle: {
     fontFamily: typography.fonts.inter.semiBold,
     fontSize: 16,
-    color: "#1C1C1E",
-    paddingHorizontal: 20,
-    marginBottom: 12,
+    color: appPalette.ink,
+    paddingHorizontal: spacing.screenPadding,
+    marginBottom: spacing.s,
   },
   countryRow: {
     flexDirection: "row",
     alignItems: "center",
     paddingVertical: 14,
-    paddingHorizontal: 20,
-    gap: 12,
+    paddingHorizontal: spacing.screenPadding,
+    gap: spacing.s,
   },
   countryRowSelected: {
-    backgroundColor: "#F5F5F8",
+    backgroundColor: appPalette.fillSecondary,
   },
   countryFlag: {
     fontSize: 22,
@@ -370,11 +381,11 @@ const styles = StyleSheet.create({
     flex: 1,
     fontFamily: typography.fonts.inter.normal,
     fontSize: 15,
-    color: "#1C1C1E",
+    color: appPalette.ink,
   },
   countryDialCode: {
     fontFamily: typography.fonts.inter.medium,
     fontSize: 14,
-    color: "#8E8E93",
+    color: appPalette.systemGray,
   },
 });

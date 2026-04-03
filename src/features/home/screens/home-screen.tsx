@@ -1,7 +1,13 @@
-import { FontAwesome, Ionicons, FontAwesome5 } from "@expo/vector-icons";
+import { FontAwesome, Ionicons } from "@expo/vector-icons";
+import { useState } from "react";
+import type { ComponentProps } from "react";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
+import MaskedView from "@react-native-masked-view/masked-view";
 import { useNavigation } from "@react-navigation/native";
+import type { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import type { MainTabParamList, RootStackParamList } from "@/navigation/types";
 import {
   Platform,
   ScrollView,
@@ -11,55 +17,60 @@ import {
   TouchableOpacity,
   Pressable,
   View,
+  Dimensions,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Svg, { Line, Rect, Text as SvgText } from "react-native-svg";
+import Svg, { Line, Rect, Path, Text as SvgText } from "react-native-svg";
+import { appPalette } from "@/constants/app-colors";
+import { assets } from "@/constants/assets";
+import { spacing } from "@/theme/spacing";
+import { typography } from "@/theme/typography";
 
-const LOGO_IMAGES: Record<string, any> = {
-  amazon: require("../../../../assets/amazon.png"),
-  google: require("../../../../assets/google.png"),
-  microsoft: require("../../../../assets/microsoft.png"),
-  swiggy: require("../../../../assets/swiggy.png"),
-  zomato: require("../../../../assets/zomato.png"),
-};
+const LOGO_IMAGES = assets.logos;
 
 type CardStatus = "completed" | "current" | "locked";
 
 interface LevelCardProps {
   id: number;
   company: string;
-  logoKey?: string;
-  fallbackIcon?: string;
+  logoKey?: keyof typeof assets.logos;
+  fallbackIcon?: ComponentProps<typeof FontAwesome>["name"];
   fallbackColor?: string;
   status: CardStatus;
   marginLeft: number;
   showStartTooltip?: boolean;
+  onPress?: () => void;
+  showFeedbackTooltip?: boolean;
 }
 
 const LEVELS: LevelCardProps[] = [
-  { id: 1, company: "PhonePe", fallbackIcon: "rupee", fallbackColor: "#673AB7", status: "completed", marginLeft: 48 },
+  { id: 1, company: "PhonePe", logoKey: "phonepe", status: "completed", marginLeft: 48 },
   { id: 2, company: "Amazon", logoKey: "amazon", status: "current", marginLeft: 96, showStartTooltip: true },
-  { id: 3, company: "PhonePe", fallbackIcon: "rupee", fallbackColor: "#673AB7", status: "locked", marginLeft: 144 },
+  { id: 3, company: "PhonePe", logoKey: "phonepe", status: "locked", marginLeft: 144 },
   { id: 4, company: "Google", logoKey: "google", status: "locked", marginLeft: 144 },
   { id: 5, company: "Microsoft", logoKey: "microsoft", status: "locked", marginLeft: 96 },
-  { id: 6, company: "Facebook", fallbackIcon: "facebook", fallbackColor: "#1877F2", status: "locked", marginLeft: 48 },
+  { id: 6, company: "Facebook", fallbackIcon: "facebook", fallbackColor: appPalette.facebookBlue, status: "locked", marginLeft: 48 },
   { id: 7, company: "Amazon", logoKey: "amazon", status: "locked", marginLeft: 48 },
-  { id: 8, company: "Facebook", fallbackIcon: "facebook", fallbackColor: "#1877F2", status: "locked", marginLeft: 96 },
+  { id: 8, company: "Facebook", fallbackIcon: "facebook", fallbackColor: appPalette.facebookBlue, status: "locked", marginLeft: 96 },
 ];
 
 function TopHeader() {
   return (
     <View style={styles.headerContainer}>
-      <Text style={styles.headerTitle}>Ready!</Text>
+      <MaskedView maskElement={<Text style={styles.headerTitle}>Ready!</Text>}>
+        <LinearGradient colors={[appPalette.orangeVivid, appPalette.orangeRed]} start={{ x: 0.5, y: 0 }} end={{ x: 0.5, y: 1 }}>
+          <Text style={[styles.headerTitle, { opacity: 0 }]}>Ready!</Text>
+        </LinearGradient>
+      </MaskedView>
       <View style={styles.headerRight}>
-        <Pressable style={({pressed}) => [styles.energyPillShadow, pressed && { paddingBottom: 0, marginTop: 4 }]}>
-          <View style={styles.energyPill}>
-            <Ionicons name="flash" size={16} color="#FFF" />
+        <View style={styles.energyPillShadow}>
+          <TouchableOpacity style={styles.energyPill}>
+            <Ionicons name="flash" size={16} color={appPalette.white} />
             <Text style={styles.energyText}>8</Text>
-          </View>
-        </Pressable>
+          </TouchableOpacity>
+        </View>
         <TouchableOpacity style={styles.menuButton}>
-          <Ionicons name="menu" size={24} color="#666" />
+          <Ionicons name="menu" size={24} color={appPalette.midGray} />
         </TouchableOpacity>
       </View>
     </View>
@@ -69,51 +80,95 @@ function TopHeader() {
 function StickyBanner() {
   return (
     <View style={styles.bannerWrapper}>
-      <Pressable style={({pressed}) => [styles.bannerShadow, pressed && { paddingBottom: 0, marginTop: 4 }]}>
+      <Pressable style={({pressed}) => [styles.bannerShadow, pressed && { paddingBottom: 0, marginTop: spacing.xxs }]}>
         <View style={styles.bannerContainer}>
-          <Image source={require("../../../../assets/body.png")} style={styles.bannerImage} contentFit="contain" />
+          <Image source={assets.images.body} style={styles.bannerImage} contentFit="contain" cachePolicy="memory-disk" />
           <View style={styles.bannerTextContainer}>
             <Text style={styles.bannerSubtitle}>Practicing Top 50 Questions for</Text>
             <Text style={styles.bannerTitle}>Big Tech Companies</Text>
           </View>
-          <Ionicons name="chevron-down" size={20} color="#333" />
+          <Ionicons name="chevron-down" size={20} color={appPalette.darkGray} />
         </View>
       </Pressable>
     </View>
   );
 }
 
-function LevelCard({ id, company, logoKey, fallbackIcon, fallbackColor, status, marginLeft, showStartTooltip }: LevelCardProps) {
+function LevelCard({ id, company, logoKey, fallbackIcon, fallbackColor, status, marginLeft, showStartTooltip, onPress, showFeedbackTooltip }: LevelCardProps) {
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const isCompleted = status === "completed";
   const isCurrent = status === "current";
   const isLocked = status === "locked";
 
-  const bgColor = isCompleted ? "#D0F8BC" : isCurrent ? "#FFEFB9" : "#EFEFF4";
-  const shadowColor = isCompleted ? "#00AD00" : isCurrent ? "#CA9100" : "#8E8E93";
-  const numberColor = isCompleted ? "#FFF" : isCurrent ? "#FFF" : "#FFFFFF";
-  const textColor = "#1C1C1E";
-  const numberTextStroke = isLocked ? "#4A4A4A" : "transparent";
-  
-  const innerBorderWidth = 0;
-  const innerBorderColor = "transparent";
+  const bgColor = isCompleted ? appPalette.greenMint : isCurrent ? appPalette.yellowLight : appPalette.separator;
+  const shadowColor = isCompleted ? appPalette.greenShadow : isCurrent ? appPalette.goldMedium : appPalette.systemGray4;
+  const textColor = appPalette.ink;
+
+  const tooltipShadow = {
+    shadowColor: appPalette.black,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 8,
+  };
 
   return (
-    <View style={[styles.cardWrapper, { marginLeft, alignSelf: "flex-start", zIndex: showStartTooltip ? 10 : 1 }]}>
+    <View style={[styles.cardWrapper, { marginLeft, alignSelf: "flex-start", zIndex: showFeedbackTooltip ? 20 : showStartTooltip ? 10 : 1 }]}>
       {showStartTooltip && (
         <View style={styles.tooltipWrapper}>
-          <View style={styles.tooltipContainer}>
+          <View style={[styles.tooltipContainer, tooltipShadow]}>
             <Text style={styles.tooltipText}>START</Text>
             <View style={styles.tooltipArrow} />
           </View>
         </View>
       )}
 
-      <Pressable style={({pressed}) => [{ 
+      {showFeedbackTooltip && (
+        <View style={styles.feedbackTooltipWrapper}>
+          <View style={styles.feedbackTooltipArrow} />
+          <View style={styles.feedbackTooltipContainer}>
+            <Text style={styles.feedbackTooltipText}>
+              API latency is variable & app is sluggish,{"\n"}How do you design UI safely?
+            </Text>
+            <View style={styles.feedbackTooltipMeta}>
+              <Text style={styles.feedbackTooltipAskedBy}>Asked by {company}</Text>
+              <View style={styles.feedbackTooltipTimeContainer}>
+                <Ionicons name="timer-outline" size={14} color={appPalette.ink} />
+                <Text style={styles.feedbackTooltipTime}>2 mins</Text>
+              </View>
+            </View>
+
+            <TouchableOpacity 
+              style={styles.feedbackButtonWrapper} 
+              activeOpacity={0.8}
+              onPress={() => navigation.navigate("SessionResult", { questionId: String(id) })}
+            >
+              <View style={styles.feedbackButtonShadow} />
+              <View style={styles.feedbackButtonContainer}>
+                <Text style={styles.feedbackButtonText}>FEEDBACK</Text>
+              </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={styles.aiListenButtonWrapper} 
+              activeOpacity={0.8}
+            >
+              <View style={styles.aiListenButtonShadow} />
+              <View style={styles.aiListenButtonContainer}>
+                <Ionicons name="headset" size={16} color={appPalette.white} style={{marginRight: 6}} />
+                <Text style={styles.aiListenButtonText}>AI VS AI (LISTEN)</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
+
+      <Pressable onPress={onPress} style={({pressed}) => [{ 
           borderRadius: 30, 
           backgroundColor: shadowColor, 
-          paddingBottom: 8,
+          paddingBottom: spacing.xs,
           width: 206
-      }, pressed && { paddingBottom: 0, marginTop: 8 }]}>
+      }, pressed && { paddingBottom: 0, marginTop: spacing.xs }]}>
         <View style={{ 
             flexDirection: "row", 
             borderRadius: 30, 
@@ -126,9 +181,9 @@ function LevelCard({ id, company, logoKey, fallbackIcon, fallbackColor, status, 
           
           {!isLocked && (
             <View style={{ position: "absolute", top: 0, left: 0, bottom: 0, right: 0, overflow: "hidden", borderRadius: 30 }}>
-                <Svg width="196" height="73" viewBox="0 0 196 73" fill="none">
-                  <Rect x="-10.15" y="-12.71" width="20" height="68" transform="rotate(45 -10.15 -12.71)" fill="white" fillOpacity={0.4} />
-                  <Rect x="8" y="-11" width="20" height="100" transform="rotate(45 8 -11)" fill="white" fillOpacity={0.4} />
+                <Svg width="100%" height="100%" viewBox="0 0 206 73" preserveAspectRatio="none" fill="none">
+                  <Path d="M0 0 H206 V25 Q103 45 0 25 Z" fill="white" fillOpacity={0.4} />
+                  <Path d="M0 0 H206 V8 Q103 15 0 8 Z" fill="white" fillOpacity={0.5} />
                 </Svg>
             </View>
           )}
@@ -137,20 +192,20 @@ function LevelCard({ id, company, logoKey, fallbackIcon, fallbackColor, status, 
               flex: 1,
               flexDirection: "row", 
               alignItems: "center", 
-              paddingLeft: 20, 
-              paddingRight: 8,
+              paddingLeft: spacing.l,
+              paddingRight: spacing.xs,
               height: 73,
           }}>
-            <Text style={[styles.companyText, { color: textColor }]}>{company}</Text>
+            <Text style={[styles.companyText, { color: textColor, fontFamily: isLocked ? typography.fonts.manrope.medium : typography.fonts.manrope.semiBold }]}>{company}</Text>
             <View style={[styles.iconCircle, { 
-              marginLeft: 4, 
+              marginLeft: spacing.xxs,
               borderWidth: 0.68,
-              borderColor: isCompleted ? "#D0F8BC" : isCurrent ? "#FFEFB9" : "#D1D1D6",
+              borderColor: isCompleted ? appPalette.greenMint : isCurrent ? appPalette.yellowLight : appPalette.systemGray5,
             }]}>
               {logoKey && LOGO_IMAGES[logoKey] ? (
-                <Image source={LOGO_IMAGES[logoKey]} style={styles.logoImage} contentFit="contain" />
+                <Image source={LOGO_IMAGES[logoKey]} style={styles.logoImage} contentFit="contain" cachePolicy="memory-disk" />
               ) : (
-                <FontAwesome name={fallbackIcon as any} size={14} color={fallbackColor} />
+                <FontAwesome name={fallbackIcon} size={14} color={fallbackColor} />
               )}
             </View>
           </View>
@@ -159,7 +214,7 @@ function LevelCard({ id, company, logoKey, fallbackIcon, fallbackColor, status, 
               width: 74, 
               height: 74, 
               borderRadius: 30, 
-              backgroundColor: isCompleted ? "#51D900" : isCurrent ? "#FFCE00" : "#D1D1D6", 
+              backgroundColor: isCompleted ? appPalette.greenBright : isCurrent ? appPalette.yellow : appPalette.systemGray5,
               alignItems: "center", 
               justifyContent: "center",
               marginRight: 0,
@@ -170,63 +225,51 @@ function LevelCard({ id, company, logoKey, fallbackIcon, fallbackColor, status, 
                 width: 64,
                 height: 64,
                 borderRadius: 26,
-                backgroundColor: isCompleted ? "#7BE047" : isCurrent ? "#FFCE00" : "#D1D1D6",
+                backgroundColor: isCompleted ? appPalette.greenLime : isCurrent ? appPalette.yellow : appPalette.systemGray5,
                 alignItems: "center",
                 justifyContent: "center",
                 overflow: "hidden",
             }}>
               {!isLocked && (
                 <View style={{ position: "absolute", top: 0, left: 0, bottom: 0, right: 0 }}>
-                  <Svg width="64" height="64" viewBox="0 0 64 64" fill="none">
-                    <Rect x="-8.81" y="-11.23" width="18" height="67.44" transform="rotate(30 -8.81 -11.23)" fill="white" fillOpacity={0.4} />
-                    <Rect x="7.94" y="-2.05" width="18" height="82.77" transform="rotate(30 7.94 -2.05)" fill="white" fillOpacity={0.4} />
+                  <Svg width="100%" height="100%" viewBox="0 0 64 64" fill="none">
+                    <Path d="M0 0 H64 V20 Q32 35 0 20 Z" fill="white" fillOpacity={0.45} />
+                    <Path d="M0 0 H64 V8 Q32 15 0 8 Z" fill="white" fillOpacity={0.6} />
                   </Svg>
                 </View>
               )}
             </View>
             
-            <View style={{ position: "absolute", zIndex: 2, alignItems: "center", justifyContent: "center" }}>
-              <Text style={[styles.numberText, { color: numberColor, 
-                 textShadowColor: '#00000099',
-                 textShadowOffset: {width: -2, height: 2},
-                 textShadowRadius: 0
-              }]}>{id}</Text>
-              <Text style={[styles.numberText, { color: numberColor, position: 'absolute',
-                 textShadowColor: '#00000099',
-                 textShadowOffset: {width: 2, height: 2},
-                 textShadowRadius: 0
-              }]}>{id}</Text>
-              <Text style={[styles.numberText, { color: numberColor, position: 'absolute',
-                 textShadowColor: '#00000099',
-                 textShadowOffset: {width: 2, height: -2},
-                 textShadowRadius: 0
-              }]}>{id}</Text>
-              <Text style={[styles.numberText, { color: numberColor, position: 'absolute',
-                 textShadowColor: '#00000099',
-                 textShadowOffset: {width: -2, height: -2},
-                 textShadowRadius: 0
-              }]}>{id}</Text>
-              
-              <Text style={[styles.numberText, { color: numberColor, position: 'absolute',
-                 textShadowColor: '#00000099',
-                 textShadowOffset: {width: 0, height: 2},
-                 textShadowRadius: 0
-              }]}>{id}</Text>
-              <Text style={[styles.numberText, { color: numberColor, position: 'absolute',
-                 textShadowColor: '#00000099',
-                 textShadowOffset: {width: 0, height: -2},
-                 textShadowRadius: 0
-              }]}>{id}</Text>
-              <Text style={[styles.numberText, { color: numberColor, position: 'absolute',
-                 textShadowColor: '#00000099',
-                 textShadowOffset: {width: 2, height: 0},
-                 textShadowRadius: 0
-              }]}>{id}</Text>
-              <Text style={[styles.numberText, { color: numberColor, position: 'absolute',
-                 textShadowColor: '#00000099',
-                 textShadowOffset: {width: -2, height: 0},
-                 textShadowRadius: 0
-              }]}>{id}</Text>
+            <View style={{ position: "absolute", zIndex: 2, alignItems: "center", justifyContent: "center", width: 64, height: 64 }} pointerEvents="none">
+                <Svg width="64" height="64" viewBox="0 0 64 64">
+                    {/* Background stroke */}
+                    <SvgText
+                        x="32"
+                        y="44"
+                        fill="transparent"
+                        stroke={appPalette.overlayBlack60}
+                        strokeWidth="4"
+                        strokeLinejoin="round"
+                        fontSize="36"
+                        fontFamily={typography.fonts.manrope.bold}
+                        fontWeight="800"
+                        textAnchor="middle"
+                    >
+                        {id}
+                    </SvgText>
+                    {/* Foreground fill */}
+                    <SvgText
+                        x="32"
+                        y="44"
+                        fill="white"
+                        fontSize="36"
+                        fontFamily={typography.fonts.manrope.bold}
+                        fontWeight="800"
+                        textAnchor="middle"
+                    >
+                        {id}
+                    </SvgText>
+                </Svg>
             </View>
           </View>
 
@@ -239,53 +282,55 @@ function LevelCard({ id, company, logoKey, fallbackIcon, fallbackColor, status, 
 function MilestoneDivider() {
   return (
     <View style={styles.milestoneWrapper}>
-      <View style={styles.dottedLineContainer}>
-        <Svg height="2" width="100%">
-          <Line x1="0" y1="1" x2="100%" y2="1" stroke="#D4B04C" strokeWidth="1.5" strokeDasharray="6, 6" />
-        </Svg>
-      </View>
       <View style={styles.milestoneContent}>
-        <FontAwesome name="flag" size={14} color="#C8A232" />
+        <FontAwesome name="flag" size={14} color={appPalette.goldShadow} />
         <Text style={styles.milestoneText}>2,312 users completed Question 3 today</Text>
-        <FontAwesome name="flag" size={14} color="#C8A232" style={{ transform: [{ scaleX: -1 }] }} />
+        <FontAwesome name="flag" size={14} color={appPalette.goldShadow} />
+      </View>
+      <View style={styles.dottedLineContainer}>
+        <View style={{ overflow: 'hidden' }}>
+          <Svg height="2" width="100%">
+            <Line x1="0" y1="1" x2="100%" y2="1" stroke={appPalette.goldShadow} strokeWidth="1" strokeDasharray="3, 3" />
+          </Svg>
+        </View>
       </View>
     </View>
   );
 }
 
 function BottomNav() {
-  const navigation = useNavigation<any>();
+  const navigation = useNavigation<BottomTabNavigationProp<MainTabParamList>>();
   
   return (
     <View style={styles.bottomNavWrapper}>
       <View style={styles.bottomNavShadow}>
         <View style={styles.bottomNavContainer}>
           <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate("Home")}>
-            <Ionicons name="home" size={24} color="#FF6B00" />
-            <Text style={[styles.navText, { color: "#FF6B00" }]}>Home</Text>
+            <Image source={assets.icons.home} style={styles.navIcon} contentFit="contain" cachePolicy="memory-disk" />
+            <Text style={[styles.navText, { color: appPalette.orangeAlt }]}>Home</Text>
           </TouchableOpacity>
-          
+
           <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate("Settings")}>
-            <Ionicons name="easel-outline" size={24} color="#4A4A4A" />
-            <Text style={[styles.navText, { color: "#4A4A4A" }]}>Settings</Text>
+            <Image source={assets.icons.settings} style={styles.navIcon} contentFit="contain" cachePolicy="memory-disk" />
+            <Text style={[styles.navText, { color: appPalette.ink4 }]}>Settings</Text>
           </TouchableOpacity>
         </View>
       </View>
       
       <View style={styles.navItemActiveWrapper}>
-        <Pressable style={({pressed}) => [styles.navItemActiveShadow, pressed && { paddingBottom: 0, marginTop: 4 }]} onPress={() => navigation.navigate("Store")}>
+        <Pressable style={({pressed}) => [styles.navItemActiveShadow, pressed && { paddingBottom: 0, marginTop: spacing.xxs }]} onPress={() => navigation.navigate("Store")}>
           <View style={styles.navItemActive}>
-            <View style={styles.svgPaddingContainer}>
-              <View style={[StyleSheet.absoluteFill, { backgroundColor: "#E5F2FF", borderRadius: 34, overflow: "hidden" }]}>
-                <Svg width="68" height="68" viewBox="0 0 68 68" fill="none" style={styles.svgAbsoluteInner}>
+            <View>
+              <View style={[StyleSheet.absoluteFill, { backgroundColor: appPalette.blueWash, borderRadius: 34, overflow: "hidden" }]}>
+                <Svg width="68" height="68" viewBox="0 0 68 68" fill="none">
                   <Rect x="-15" y="-20" width="16" height="120" transform="rotate(30 -15 -20)" fill="white" fillOpacity={0.4} />
                   <Rect x="15" y="-20" width="16" height="120" transform="rotate(30 15 -20)" fill="white" fillOpacity={0.4} />
                   <Rect x="45" y="-20" width="16" height="120" transform="rotate(30 45 -20)" fill="white" fillOpacity={0.4} />
                 </Svg>
               </View>
             </View>
-            <FontAwesome5 name="shopping-bag" size={22} color="#1A2B4C" style={{ zIndex: 2, marginBottom: 2 }} />
-            <Text style={[styles.navText, { color: "#4A4A4A", zIndex: 2 }]}>Store</Text>
+            <Image source={assets.icons.store} style={[styles.navIcon, { zIndex: 2, marginBottom: spacing.xxxs }]} contentFit="contain" cachePolicy="memory-disk" />
+            <Text style={[styles.navText, { color: appPalette.ink4, zIndex: 2 }]}>Store</Text>
           </View>
         </Pressable>
       </View>
@@ -295,10 +340,11 @@ function BottomNav() {
 
 export function HomeScreen() {
   const insets = useSafeAreaInsets();
+  const [activeCardId, setActiveCardId] = useState<number | null>(null);
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
-      <StatusBar barStyle="dark-content" backgroundColor="#FFF" />
+      <StatusBar barStyle="dark-content" backgroundColor={appPalette.white} />
 
       <TopHeader />
       <StickyBanner />
@@ -307,24 +353,36 @@ export function HomeScreen() {
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
+        onScrollBeginDrag={() => setActiveCardId(null)}
       >
-        <View style={styles.pathContainer}>
+        <Pressable style={styles.pathContainer} onPress={() => setActiveCardId(null)}>
           {LEVELS.slice(0, 3).map((level) => (
-            <LevelCard key={level.id} {...level} />
+            <LevelCard
+              key={level.id}
+              {...level}
+              onPress={() => {
+                if (level.id === 1) {
+                  setActiveCardId(activeCardId === level.id ? null : level.id);
+                } else {
+                  setActiveCardId(null);
+                }
+              }}
+              showFeedbackTooltip={activeCardId === 1 && level.id === 1}
+            />
           ))}
 
           <MilestoneDivider />
 
           {LEVELS.slice(3).map((level) => (
-            <LevelCard key={level.id} {...level} />
+            <LevelCard key={level.id} {...level} onPress={() => setActiveCardId(null)} />
           ))}
 
           <View style={{ height: 120 }} />
-        </View>
+        </Pressable>
       </ScrollView>
       
       <LinearGradient
-        colors={['rgba(255,255,255,0)', 'rgba(255,255,255,0.85)', 'rgba(255,255,255,1)']}
+        colors={[appPalette.overlayWhite0, appPalette.overlayWhite85, appPalette.white]}
         style={styles.bottomGradient}
         pointerEvents="none"
       />
@@ -336,118 +394,65 @@ export function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: appPalette.white,
   },
   scrollView: {
     flex: 1,
   },
   scrollContent: {
-    paddingBottom: 32,
+    paddingBottom: spacing.xxl,
   },
   headerContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingHorizontal: 20,
-    paddingVertical: 12,
+    paddingHorizontal: spacing.screenPadding,
+    paddingVertical: spacing.s,
   },
   headerTitle: {
-    fontFamily: "Onest_800ExtraBold",
+    fontFamily: typography.fonts.onest.extraBold,
     fontSize: 24,
-    color: "#FF6D00",
+    color: appPalette.orangeVivid,
   },
   headerRight: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 12,
+    gap: spacing.s,
   },
   energyPillShadow: {
-    backgroundColor: "#22C55E",
-    borderRadius: 14,
-    paddingBottom: 4,
+    backgroundColor: appPalette.green40,
+    borderRadius: spacing.xxxl,
+    paddingBottom: spacing.xxs,
   },
   energyPill: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#57D997",
-    borderRadius: 14,
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    gap: 2,
+    justifyContent: "center",
+    backgroundColor: appPalette.greenSoft,
+    borderRadius: spacing.xxxl,
+    paddingHorizontal: spacing.s,
+    height: 36,
+    minWidth: 49,
+    gap: spacing.xxxs,
   },
   energyText: {
-    fontFamily: "Inter_700Bold",
-    fontSize: 13,
-    color: "#FFFFFF",
+    fontFamily: typography.fonts.inter.semiBold,
+    fontSize: typography.sizes.l,
+    lineHeight: 24,
+    letterSpacing: -0.17,
+    color: appPalette.white,
+    textAlign: "center",
   },
   menuButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: "#F5F5F5",
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: appPalette.white,
     alignItems: "center",
     justifyContent: "center",
-  },
-  bannerWrapper: {
-    backgroundColor: "#FFFFFF",
-    paddingHorizontal: 20,
-    paddingVertical: 8,
-  },
-  bannerShadow: {
-    backgroundColor: "#D4B04C",
-    borderRadius: 16,
-    paddingBottom: 4,
-  },
-  bannerContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#FFF6D9",
-    borderRadius: 16,
-    padding: 14,
-    gap: 12,
-  },
-  bannerImage: {
-    width: 32,
-    height: 32,
-  },
-  bannerTextContainer: {
-    flex: 1,
-  },
-  bannerSubtitle: {
-    fontFamily: "Inter_400Regular",
-    fontSize: 12,
-    color: "#6B7280",
-  },
-  bannerTitle: {
-    fontFamily: "Inter_600SemiBold",
-    fontSize: 15,
-    color: "#1C1C1E",
-    marginTop: 2,
-  },
-  pathContainer: {
-    paddingTop: 24,
-    paddingHorizontal: 16,
-  },
-  cardWrapper: {
-    marginBottom: 16,
-  },
-  tooltipWrapper: {
-    position: "absolute",
-    top: -34,
-    right: -8,
-    width: 74,
-    alignItems: "center",
-    zIndex: 10,
-    elevation: 10,
-  },
-  tooltipContainer: {
-    backgroundColor: "#FFFFFF",
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    paddingVertical: 6,
     ...Platform.select({
       ios: {
-        shadowColor: "#000",
+        shadowColor: appPalette.black,
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
         shadowRadius: 4,
@@ -457,10 +462,74 @@ const styles = StyleSheet.create({
       },
     }),
   },
+  bannerWrapper: {
+    backgroundColor: appPalette.white,
+    paddingHorizontal: spacing.screenPadding,
+    paddingVertical: spacing.xxs,
+  },
+  bannerShadow: {
+    backgroundColor: appPalette.gold,
+    borderRadius: spacing.cardRadius,
+    paddingBottom: spacing.xxs,
+  },
+  bannerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: appPalette.yellowWash,
+    borderRadius: spacing.cardRadius,
+    paddingVertical: spacing.m,
+    paddingHorizontal: spacing.l,
+    gap: spacing.s,
+  },
+  bannerImage: {
+    width: 40,
+    height: 40,
+  },
+  bannerTextContainer: {
+    flex: 1,
+  },
+  bannerSubtitle: {
+    fontFamily: typography.fonts.manrope.medium,
+    fontSize: 14,
+    lineHeight: 20,
+    color: appPalette.gray60,
+  },
+  bannerTitle: {
+    fontFamily: typography.fonts.manrope.semiBold,
+    fontSize: 16,
+    lineHeight: 24,
+    color: appPalette.ink,
+    marginTop: spacing.xxxs,
+  },
+  pathContainer: {
+    paddingTop: spacing.xl,
+    paddingHorizontal: spacing.m,
+  },
+  cardWrapper: {
+    marginBottom: spacing.l,
+  },
+  tooltipWrapper: {
+    position: "absolute",
+    top: -36,
+    right: -8,
+    minWidth: 80,
+    alignItems: "center",
+    zIndex: 10,
+    elevation: 10,
+  },
+  tooltipContainer: {
+    backgroundColor: appPalette.white,
+    borderRadius: spacing.xs,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    minWidth: 80,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   tooltipText: {
-    fontFamily: "Inter_700Bold",
-    fontSize: 12,
-    color: "#22C55E",
+    fontFamily: typography.fonts.inter.bold,
+    fontSize: 13,
+    color: appPalette.green50,
     letterSpacing: 1,
   },
   tooltipArrow: {
@@ -469,21 +538,22 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     width: 8,
     height: 8,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: appPalette.white,
     transform: [{ rotate: "45deg" }],
   },
   companyText: {
-    fontFamily: "Inter_600SemiBold",
-    fontSize: 16,
-    color: "#1C1C1E",
+    fontFamily: typography.fonts.manrope.medium,
+    fontSize: typography.sizes.m,
+    lineHeight: 20,
+    color: appPalette.ink,
     marginRight: 0,
-    letterSpacing: -0.16,
+    letterSpacing: -0.15,
   },
   iconCircle: {
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: appPalette.white,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -492,7 +562,7 @@ const styles = StyleSheet.create({
     height: 16,
   },
   numberText: {
-    fontFamily: "Manrope",
+    fontFamily: typography.fonts.manrope.bold,
     fontWeight: "800",
     fontSize: 36,
     lineHeight: 36,
@@ -501,30 +571,30 @@ const styles = StyleSheet.create({
     zIndex: 2,
   },
   milestoneWrapper: {
-    marginVertical: 24,
+    marginVertical: spacing.xl,
     alignItems: "center",
     justifyContent: "center",
-    width: "100%",
+    width: Dimensions.get('window').width,
+    marginLeft: -spacing.m,
   },
   milestoneContent: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 8,
-    backgroundColor: "#FFFFFF",
-    paddingHorizontal: 12,
-    zIndex: 2,
+    gap: spacing.xs,
+    paddingHorizontal: spacing.s,
+    paddingBottom: spacing.xxs,
   },
   milestoneText: {
-    fontFamily: "Inter_600SemiBold",
-    fontSize: 13,
-    color: "#D4B04C",
+    fontFamily: typography.fonts.manrope.bold,
+    fontWeight: "700",
+    fontSize: 14,
+    lineHeight: 14,
+    letterSpacing: -0.14,
+    textAlign: "center",
+    color: appPalette.goldShadow,
   },
   dottedLineContainer: {
-    position: "absolute",
     width: "100%",
-    top: "50%",
-    marginTop: -1,
-    zIndex: 1,
   },
   bottomNavWrapper: {
     position: "absolute",
@@ -544,23 +614,23 @@ const styles = StyleSheet.create({
     zIndex: 5,
   },
   bottomNavShadow: {
-    backgroundColor: "#EFEFF4",
+    backgroundColor: appPalette.separator,
     borderRadius: 99999,
-    paddingBottom: 4, 
+    paddingBottom: spacing.xxs,
     height: 72,
   },
   bottomNavContainer: {
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    paddingVertical: 5,
-    paddingHorizontal: 16,
-    gap: 24,
+    paddingVertical: spacing.xxs,
+    paddingHorizontal: spacing.m,
+    gap: spacing.xl,
     width: 172,
     height: 68,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: appPalette.white,
     borderWidth: 1,
-    borderColor: "#EFEFF4",
+    borderColor: appPalette.separator,
     borderRadius: 99999,
   },
   navItem: {
@@ -569,12 +639,12 @@ const styles = StyleSheet.create({
     width: 54,
   },
   navItemActiveWrapper: {
-    marginLeft: 12, 
+    marginLeft: spacing.s,
   },
   navItemActiveShadow: {
-    backgroundColor: "#B2D9FF",
+    backgroundColor: appPalette.blueLight,
     borderRadius: 34,
-    paddingBottom: 4,
+    paddingBottom: spacing.xxs,
     height: 72,
     width: 68,
   },
@@ -583,14 +653,128 @@ const styles = StyleSheet.create({
     height: 68,
     borderRadius: 34,
     borderWidth: 1,
-    borderColor: "#B2D9FF",
-    backgroundColor: "#E5F2FF",
+    borderColor: appPalette.blueLight,
+    backgroundColor: appPalette.blueWash,
     alignItems: "center",
     justifyContent: "center",
   },
+  navIcon: {
+    width: 24,
+    height: 24,
+  },
   navText: {
-    fontFamily: "Inter_600SemiBold",
+    fontFamily: typography.fonts.inter.semiBold,
     fontSize: 12,
-    marginTop: 4,
+    marginTop: spacing.xxs,
+  },
+  feedbackTooltipWrapper: {
+    position: "absolute",
+    top: 90,
+    left: -48,
+    width: 380,
+    zIndex: 20,
+    elevation: 20,
+  },
+  feedbackTooltipArrow: {
+    position: "absolute",
+    top: -6,
+    left: 190,
+    width: 16,
+    height: 16,
+    backgroundColor: appPalette.yellowBright,
+    transform: [{ rotate: "45deg" }],
+    zIndex: 1,
+  },
+  feedbackTooltipContainer: {
+    backgroundColor: appPalette.yellowBright,
+    borderRadius: 12,
+    padding: 16,
+    gap: 10,
+    shadowColor: appPalette.black,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 8,
+    zIndex: 2,
+  },
+  feedbackTooltipText: {
+    fontFamily: typography.fonts.manrope.bold,
+    fontSize: 16,
+    lineHeight: 22,
+    color: appPalette.ink,
+  },
+  feedbackTooltipMeta: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  feedbackTooltipAskedBy: {
+    fontFamily: typography.fonts.manrope.semiBold,
+    fontSize: 14,
+    color: appPalette.ink3,
+    letterSpacing: -0.14,
+  },
+  feedbackTooltipTimeContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  feedbackTooltipTime: {
+    fontFamily: typography.fonts.manrope.semiBold,
+    fontSize: 14,
+    color: appPalette.ink3,
+    letterSpacing: -0.14,
+    marginLeft: 4,
+  },
+  feedbackButtonWrapper: {
+  },
+  feedbackButtonShadow: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: -4,
+    backgroundColor: "rgba(0,0,0,0.15)",
+    borderRadius: 12,
+  },
+  feedbackButtonContainer: {
+    backgroundColor: appPalette.white,
+    borderRadius: 12,
+    paddingVertical: 14,
+    alignItems: "center",
+  },
+  feedbackButtonText: {
+    fontFamily: typography.fonts.inter.bold,
+    fontSize: 15,
+    lineHeight: 17,
+    color: appPalette.greenVivid,
+    letterSpacing: 0.51,
+    textTransform: "uppercase",
+  },
+  aiListenButtonWrapper: {
+  },
+  aiListenButtonShadow: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: -3,
+    backgroundColor: appPalette.yellow70,
+    borderRadius: 12,
+  },
+  aiListenButtonContainer: {
+    backgroundColor: appPalette.brownOlive,
+    borderRadius: 12,
+    paddingVertical: 14,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  aiListenButtonText: {
+    fontFamily: typography.fonts.inter.bold,
+    fontSize: 15,
+    lineHeight: 17,
+    color: appPalette.white,
+    letterSpacing: 0.51,
+    textTransform: "uppercase",
   },
 });

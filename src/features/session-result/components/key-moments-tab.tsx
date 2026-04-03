@@ -3,6 +3,8 @@ import { FlashList } from "@shopify/flash-list";
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
+import { appPalette } from "@/constants/app-colors";
+import { spacing } from "@/theme/spacing";
 import { typography } from "@/theme/typography";
 
 import type { KeyMoment } from "../types";
@@ -23,14 +25,13 @@ function AudioPlayer({ duration }: { duration: number }) {
     <View style={styles.audioPlayer}>
       <View style={styles.playerRow}>
         <TouchableOpacity style={styles.playButton} activeOpacity={0.7}>
-          <Ionicons name="play" size={22} color="#C45C00" style={{ marginLeft: 2 }} />
+          <Ionicons name="play" size={22} color={appPalette.orangeBrown} style={{ marginLeft: spacing.xxxs }} />
         </TouchableOpacity>
         <View style={styles.playerRight}>
           <Text style={styles.audioTitle}>Mock Interview</Text>
           <View style={styles.progressContainer}>
             <View style={styles.progressTrack}>
               <View style={styles.progressFill} />
-              <View style={styles.progressDot} />
             </View>
           </View>
           <View style={styles.timeRow}>
@@ -45,7 +46,7 @@ function AudioPlayer({ duration }: { duration: number }) {
 
 function MomentItem({ moment, isLast }: { moment: KeyMoment; isLast: boolean }) {
   const isPositive = moment.type === "positive";
-  const timestampColor = isPositive ? "#2E7D32" : "#E65100";
+  const timestampColor = isPositive ? appPalette.green70 : appPalette.orangeDeep;
 
   return (
     <View style={[styles.momentItem, !isLast && styles.momentItemBorder]}>
@@ -80,81 +81,75 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   listContent: {
-    paddingBottom: 32,
+    paddingBottom: spacing.xxl,
   },
   audioPlayer: {
-    backgroundColor: "#FFF1E5",
-    borderRadius: 16,
-    paddingTop: 16,
-    paddingBottom: 16,
-    paddingLeft: 12,
-    paddingRight: 16,
-    marginBottom: 16,
+    backgroundColor: appPalette.orangeWash,
+    borderRadius: spacing.cardRadius,
+    paddingTop: spacing.m,
+    paddingBottom: spacing.m,
+    paddingLeft: spacing.s,
+    paddingRight: spacing.m,
+    marginBottom: spacing.m,
   },
   playerRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 12,
+    gap: spacing.s,
   },
   playButton: {
     width: 48,
     height: 48,
-    borderRadius: 24,
-    backgroundColor: "#FFFFFF",
+    borderRadius: spacing.buttonRadius,
+    backgroundColor: appPalette.white,
     alignItems: "center",
     justifyContent: "center",
   },
   playerRight: {
     flex: 1,
-    gap: 4,
+    gap: spacing.xs,
   },
   audioTitle: {
     fontFamily: typography.fonts.manrope.semiBold,
     fontSize: 14,
     lineHeight: 14,
     letterSpacing: 0,
-    color: "#C45C00",
+    color: appPalette.orangeBrown,
   },
   progressContainer: {
     flex: 1,
     justifyContent: "center",
   },
   progressTrack: {
-    height: 4,
-    backgroundColor: "#FFCCBC",
-    borderRadius: 2,
+    height: 6,
+    backgroundColor: appPalette.orangeTrack,
+    borderRadius: 3,
     flexDirection: "row",
     alignItems: "center",
   },
   progressFill: {
-    width: "30%",
-    height: 4,
-    backgroundColor: "#FF6D00",
-    borderRadius: 2,
-  },
-  progressDot: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
-    backgroundColor: "#FF6D00",
-    marginLeft: -6,
+    width: "40%",
+    height: 6,
+    backgroundColor: appPalette.orangeVivid,
+    borderRadius: 3,
   },
   timeRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 6,
   },
   timeText: {
-    fontFamily: typography.fonts.inter.normal,
-    fontSize: 11,
-    color: "#8E8E93",
+    fontFamily: typography.fonts.manrope.semiBold,
+    fontSize: 12,
+    lineHeight: 12,
+    letterSpacing: 0,
+    color: appPalette.systemGray,
   },
   momentItem: {
-    paddingVertical: 16,
+    paddingVertical: spacing.m,
   },
   momentItemBorder: {
     borderBottomWidth: 1,
-    borderBottomColor: "#EFEFF4",
+    borderBottomColor: appPalette.separator,
   },
   timestamp: {
     fontFamily: typography.fonts.manrope.semiBold,
@@ -168,6 +163,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 20,
     letterSpacing: 0,
-    color: "#1C1C1E",
+    color: appPalette.ink,
   },
 });

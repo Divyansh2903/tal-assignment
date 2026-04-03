@@ -5,7 +5,6 @@ import { StyleSheet, View } from "react-native";
 import { HomeScreen } from "@/features/home/screens/home-screen";
 import { SettingsScreen } from "@/features/settings/screens/settings-screen";
 import { colors } from "@/theme/colors";
-import { typography } from "@/theme/typography";
 
 import type { MainTabParamList } from "./types";
 

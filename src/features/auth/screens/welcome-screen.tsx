@@ -6,6 +6,8 @@ import { Dimensions, StyleSheet, Text, View } from "react-native";
 
 import { PrimaryButton } from "@/components/ui/primary-button";
 import type { AuthStackParamList } from "@/navigation/types";
+import { appPalette } from "@/constants/app-colors";
+import { assets } from "@/constants/assets";
 import { colors } from "@/theme/colors";
 import { textStyles, typography } from "@/theme/typography";
 
@@ -15,14 +17,14 @@ const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 const FIGMA_HEIGHT = 852;
 const scale = SCREEN_HEIGHT / FIGMA_HEIGHT;
 
-const videoSource = require("../../../../assets/container_video.mp4");
+const videoSource = assets.images.containerVideo;
 
 const COMPANY_LOGOS = [
-  { id: "swiggy", source: require("../../../../assets/swiggy.png"), left: 9, top: 13, fill: true },
-  { id: "microsoft", source: require("../../../../assets/microsoft.png"), left: 166, top: -16, fill: false },
-  { id: "google", source: require("../../../../assets/google.png"), left: 226, top: 88, fill: false },
-  { id: "amazon", source: require("../../../../assets/amazon.png"), left: -17, top: 148, fill: false },
-  { id: "zomato", source: require("../../../../assets/zomato.png"), left: 166, top: 210, fill: true },
+  { id: "swiggy", source: assets.logos.swiggy, left: 9, top: 13, fill: true },
+  { id: "microsoft", source: assets.logos.microsoft, left: 166, top: -16, fill: false },
+  { id: "google", source: assets.logos.google, left: 226, top: 88, fill: false },
+  { id: "amazon", source: assets.logos.amazon, left: -17, top: 148, fill: false },
+  { id: "zomato", source: assets.logos.zomato, left: 166, top: 210, fill: true },
 ];
 
 export function WelcomeScreen({ navigation }: Props) {
@@ -36,9 +38,10 @@ export function WelcomeScreen({ navigation }: Props) {
   return (
     <View style={styles.container}>
       <Image
-        source={require("../../../../assets/full_logo.png")}
+        source={assets.images.fullLogo}
         style={[styles.headerLogo, { top: 78 * scale }]}
         contentFit="contain"
+        cachePolicy="memory-disk"
       />
 
       <View style={[styles.heroContainer, { top: (FIGMA_HEIGHT / 2 - 330 / 2 - 29) * scale }]}>
@@ -62,6 +65,7 @@ export function WelcomeScreen({ navigation }: Props) {
                 source={logo.source}
                 style={logo.fill ? styles.logoImageFill : styles.logoImageIcon}
                 contentFit={logo.fill ? "cover" : "contain"}
+                cachePolicy="memory-disk"
               />
             </View>
           ))}
@@ -113,7 +117,7 @@ const styles = StyleSheet.create({
     left: "50%",
     marginLeft: -174,
     alignItems: "center",
-    gap: 18,
+    gap: 32,
   },
   imageContainer: {
     width: 250,
@@ -134,9 +138,9 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 1000,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: appPalette.white,
     borderWidth: 2,
-    borderColor: "#E3F3F0",
+    borderColor: appPalette.tealBorder,
     alignItems: "center",
     justifyContent: "center",
     overflow: "hidden",
@@ -157,7 +161,7 @@ const styles = StyleSheet.create({
   tagline: {
     ...textStyles.headingLarge,
     textAlign: "center",
-    color: "#1C1C1E",
+    color: appPalette.ink,
   },
   taglineHighlight: {
     color: colors.primary,
@@ -176,7 +180,7 @@ const styles = StyleSheet.create({
     lineHeight: 16,
     letterSpacing: -0.12,
     textAlign: "center",
-    color: "#6C6C70",
+    color: appPalette.inkMuted,
   },
   termsLink: {
     textDecorationLine: "underline",

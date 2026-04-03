@@ -3,6 +3,7 @@ import { Image } from "expo-image";
 import { useEffect } from "react";
 import { StyleSheet, View } from "react-native";
 
+import { assets } from "@/constants/assets";
 import type { AuthStackParamList } from "@/navigation/types";
 import { colors } from "@/theme/colors";
 
@@ -19,9 +20,10 @@ export function SplashScreen({ navigation }: Props) {
   return (
     <View style={styles.container}>
       <Image
-        source={require("../../../../assets/full_logo.png")}
+        source={assets.images.fullLogo}
         style={styles.logo}
         contentFit="contain"
+        cachePolicy="memory-disk"
       />
     </View>
   );
